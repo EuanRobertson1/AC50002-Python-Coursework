@@ -53,13 +53,13 @@ def generateAbbr(v):
         names = [line.strip() for line in file]
         print(f"names in file: {names}")
     #iterate each name
+    word_scores = []
+
     for name in names:
         #split name so we can check each word in the name
         words = name.split()
         print(f"current name: {words}")
-        #this dictionary contains the current word alongside the score for each of its letters
-        word_scores = {}
-
+        
         #get score of each character in a word
         for word in words:
             #this contains the scores for each letter
@@ -71,21 +71,17 @@ def generateAbbr(v):
             for i in range(length):
                 position_value = 0
                 char = word[i].upper()
-                print("current letter: " + char)
+                print(f"current letter: {char}")
                 #If the letter is the first letter
                 if i == 0:
                     scores.append(0)
-                    
-
                 #If the letter is the last letter
                 elif i == length - 1:
                     if char == 'E':
-                        scores.append(20)
-                        
+                       scores.append(0)
                     else:
-                        scores.append(5)
-                        
-
+                       scores.append(5)
+                    
                 #If letter isnt first or last
                 else:
                     #2nd letter of word
@@ -98,58 +94,26 @@ def generateAbbr(v):
                     
                     #obtain frequecy value of letter
                     letterFrequencyScore = v.get(char,0)
-                    print(f"Letter frequency score:  {letterFrequencyScore}")
                     #calculate total score
                     totalScore = position_value + letterFrequencyScore
                     #add this to scores
                     scores.append(totalScore)
                     
-            print(f"letter scores: {scores}")
             #update word scores
-            word_scores[word] = scores
+            word_scores.extend(scores)
             print(f"word score: {word_scores}")
 
-        
-        letters = []
-        #extract letters from current word
-        for word in words:
-            for i in range(len(word)):
-                letters.append(word[i].upper())
-        
-        
-        #find best abbreviation using the highest score from before
-        #initilise best score with infinity
-        bestScore = float('inf')
-        bestAbbreviation = None
+    bestAbbreviations = []
+    #calculate best abbreviation
+    bestAbbreviationScore = float('inf')
+    bestAbbreviation = None
+   
+    
 
-        #loop though each letter
-        for i in range(len(letters)):
-            #loop though each letter that comes after i
-            for j in range(i + 1, len(letters)):
-                #loop though each letter that comes after j
-                for k in range(j + 1, len(letters)):
-                    #create a three letter abbreviation using i,j,k
-                    abbreviation = letters[i] + letters[j] + letters[k]
-                    print(f"abbreviation: {abbreviation}")
-                    #caluculate total score using v dictionary from earlier
-                    totalAScore = (word_scores.get(letters[i], 0) +
-                                  word_scores.get(letters[j], 0) +
-                                  word_scores.get(letters[k], 0))
-                    #update best score and best abbriviation if neccessary
-                    print(f"This abbr has a score of: {totalAScore}")
-                    print(f"Current Best abbr {bestAbbreviation}")
-                    if totalAScore < bestScore:
-                        bestScore = totalAScore
-                        print("updating best abbr")
-                        bestAbbreviation = abbreviation
 
-        #add to abbreviations array
-        print(bestAbbreviation)
-        allAbbreviations = [] 
-        allAbbreviations.append((name, bestAbbreviation))           
+       
     
     
-    return allAbbreviations
     
         
 
