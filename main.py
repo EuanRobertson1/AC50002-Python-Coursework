@@ -6,7 +6,13 @@ def main():
 
     #define array abbr and call function to generate abbreviation 
     abbr = [] 
-    abbr = generateAbbr(values)
+    names = getNames()
+    abbr = generateBestAbbr(values, names)
+
+    #write to file
+    with open("testOutput.txt", "w") as file:
+        for x in range(len(abbr)):
+            file.write(f"Name: {names[x]} \n {abbr[x]} \n")
 
 
 #function for getting frequency values. Creates dictionary
@@ -19,9 +25,8 @@ def getValues():
     
     return(letterValues)
 
-
-#function for generating abbreviations     
-def generateAbbr(v):
+#function for reading in names
+def getNames():
     correctFileName = False
 
     while not correctFileName:
@@ -44,7 +49,11 @@ def generateAbbr(v):
     with open(f"{fileName}.txt", "r") as file:
         #create array containing each name in file
         names = [line.strip() for line in file]
+    
+    return names
 
+#function for generating abbreviations     
+def generateBestAbbr(v,names):
     word_scores = []#this will contain the scores for each name
     combined_names = []# this will be used in tandem with word_scores later
     for name in names:
@@ -64,7 +73,6 @@ def generateAbbr(v):
                 for i in range(length):
                     position_value = 0
                     char = word[i].upper()
-                    print(f"current character {char}")
                     #If the letter is the first letter
                     if i == 0:
                         scores.append(0)
@@ -96,13 +104,11 @@ def generateAbbr(v):
             
     bestAbbreviations = []
     #calculate best abbreviation
-    
-    print(f"Word Scores: {word_scores}")
-    print(f"Words: {combined_names}")
 
     for n in range(len(combined_names)):#iterate through each row in combined_names
         bestAbbreviationScore = float('inf')
-        bestAbbreviation = []
+        bestAbbreviation = None
+        sameScoreAbreviation = []
         row = combined_names[n]
 
         for i in range(len(row)):#iterate through each letter
@@ -111,7 +117,7 @@ def generateAbbr(v):
                     #create 3 letter abbreviation
                     abbreviation = row[i] + row[j] + row[k]
 
-                    if (not abbreviation.isalpha()):#skip abbreviation if it contains non letters i.e. symbols or apostrophes 
+                    if (not abbreviation.isalpha()):#skip abbreviation if it contains non letters i.e. symbols or apostrophes
                         break
 
                     totalAScore = (word_scores[n][i] + word_scores[n][j] + word_scores[n][k])
@@ -120,8 +126,11 @@ def generateAbbr(v):
                     if totalAScore < bestAbbreviationScore:
                         bestAbbreviation = abbreviation
                         bestAbbreviationScore = totalAScore
-
-        print(f"The best abbreviation for {row} is {bestAbbreviation}({bestAbbreviationScore})")  
+                    
+                    
+        bestAbbreviations.append(bestAbbreviation)
+    
+    return bestAbbreviations
 
 
 #call main
