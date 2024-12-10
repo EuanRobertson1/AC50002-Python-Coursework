@@ -5,12 +5,12 @@ def main():
     values = getValues()
 
     #define array abbr and call function to generate abbreviation 
-    abbr = [] 
     names = getNames()
+    abbr = [] 
     abbr = generateBestAbbr(values, names)
 
     #write to file
-    with open("testOutput.txt", "w") as file:
+    with open("Output.txt", "w") as file:
         for x in range(len(abbr)):
             file.write(f"Name: {names[x]} \n {abbr[x]} \n")
 
